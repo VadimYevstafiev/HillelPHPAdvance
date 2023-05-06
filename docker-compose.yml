@@ -1,0 +1,41 @@
+version: "3.8"
+
+volumes:
+  db_volume:
+    driver: local
+
+networks:
+  my_network:
+    driver: bridge
+
+services:
+  app:
+    build: 
+      context: docker/php
+    restart: always
+    volumes:
+      - .:/var/www/html
+    ports:
+      - "8081:80"
+    networks:
+      - my_network
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+    ports:
+      - "5432:5432"
+    volumes:
+      - "db_volume:/var/lib/postgresql/data"
+    networks:
+      - my_network
+  adminer:
+    depends_on:
+      - db
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - my_network
