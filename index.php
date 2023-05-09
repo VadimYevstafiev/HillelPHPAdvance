@@ -1,16 +1,53 @@
 <?php
 
-const DSN = "pgsql:host=db;dbname=test";
+header('Content-Type: text/plain; charset=UTF-8');
 
-const USER = "postgres";
+class Test
+{
+    use Trait1, Trait2, Trait3 {
+        Trait1::test insteadOf Trait2, Trait3;
+        Trait2::test as test2;
+        Trait3::test as test3;
+    }
 
-const PASS = "example";
+    public function getSum()
+    {
+        return $this->test() + $this->test2() + $this->test3();
+    }
 
-$pdo = new PDO(DSN, USER, PASS, [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+}
 
-$query = $pdo->prepare("SELECT * FROM students");
+trait Trait1
+{
+    public function test(): int
+    {
+        return 1;
+    }
+}
 
-$query->execute();
+trait Trait2
+{
+    public function test(): int
+    {
+        return 2;
+    }
+}
 
-echo '<pre>' . print_r($query->fetchAll(), true) . '</pre>';
+trait Trait3
+{
+    public function test(): int
+    {
+        return 3;
+    }
+}
+
+$item = new Test();
+
+var_dump($item->test());
+
+var_dump($item->test2());
+
+var_dump($item->test3());
+
+var_dump($item->getSum());
 ?>
