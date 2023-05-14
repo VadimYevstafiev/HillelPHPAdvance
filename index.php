@@ -1,16 +1,19 @@
 <?php
 
-const DSN = "pgsql:host=db;dbname=test";
+header('Content-Type: text/plain; charset=UTF-8');
 
-const USER = "postgres";
+//require_once __DIR__ . '/src/Models/User.php';
+//require_once __DIR__ . '/src/Additional/ClassThree.php';
+//require_once __DIR__ . '/src/Additional/ClassTwo.php';
+//require_once __DIR__ . '/src/ClassOne.php';
 
-const PASS = "example";
+spl_autoload_register(function($className)
+{
+    $className = lcfirst(str_replace('\\', '/', $className));
+    var_dump($className);
+    include_once $className . '.php';
+});
 
-$pdo = new PDO(DSN, USER, PASS, [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+use Src\ClassOne;
 
-$query = $pdo->prepare("SELECT * FROM students");
-
-$query->execute();
-
-echo '<pre>' . print_r($query->fetchAll(), true) . '</pre>';
-?>
+$one = new ClassOne();
