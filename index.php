@@ -1,16 +1,21 @@
 <?php
 
-const DSN = "pgsql:host=db;dbname=test";
+header('Content-Type: text/plain; charset=UTF-8');
 
-const USER = "postgres";
+spl_autoload_register(function($className)
+{
+    $className = str_replace('\\', '/', $className);
+    include_once $className . '.php';
+});
 
-const PASS = "example";
+use TaxiService\{EconomTaxiService, StandartTaxiService, LuxeTaxiService};
 
-$pdo = new PDO(DSN, USER, PASS, [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+var_dump((new EconomTaxiService())->callTaxi());
+(new EconomTaxiService())->getTaxi();
 
-$query = $pdo->prepare("SELECT * FROM students");
+var_dump((new StandartTaxiService())->callTaxi());
+(new StandartTaxiService())->getTaxi();
 
-$query->execute();
-
-echo '<pre>' . print_r($query->fetchAll(), true) . '</pre>';
+var_dump((new LuxeTaxiService())->callTaxi());
+(new LuxeTaxiService())->getTaxi();
 ?>
