@@ -1,16 +1,28 @@
 <?php
 
-const DSN = "pgsql:host=db;dbname=test";
+header('Content-Type: text/plain; charset=UTF-8');
 
-const USER = "postgres";
+spl_autoload_register(function($className)
+{
+    $className = str_replace('\\', '/', $className);
+    include_once $className . '.php';
+});
 
-const PASS = "example";
+use TVfactory\{TVfactoryContract, LG_TVfactory, Sony_TVfactory};
 
-$pdo = new PDO(DSN, USER, PASS, [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+function CreateTV (TVfactoryContract $factory)
+{
+    $tvs[0] = $factory->CreateLCD_TV();
+    $tvs[1] = $factory->CreateLED_TV();
 
-$query = $pdo->prepare("SELECT * FROM students");
+    foreach ($tvs as $tv)
+    {
+        echo $tv->switchOnTV();
+        echo $tv->watchTV();
+        echo $tv->switchOffTV();
+        echo PHP_EOL;
+    }
+}
 
-$query->execute();
-
-echo '<pre>' . print_r($query->fetchAll(), true) . '</pre>';
-?>
+CreateTV (new LG_TVfactory);
+CreateTV (new Sony_TVfactory);
