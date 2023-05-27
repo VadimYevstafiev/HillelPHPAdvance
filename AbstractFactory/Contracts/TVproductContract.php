@@ -1,8 +1,8 @@
 <?php
 
-namespace TVproduct;
+namespace Contracts;
 
-interface TVproductCotract
+interface TVproductContract
 {
     public function switchOnTV(): string;
 
