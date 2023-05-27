@@ -1,16 +1,21 @@
 <?php
 
-const DSN = "pgsql:host=db;dbname=test";
+header('Content-Type: text/plain; charset=UTF-8');
 
-const USER = "postgres";
+spl_autoload_register(function($className)
+{
+    $className = str_replace('\\', '/', $className);
+    include_once $className . '.php';
+});
 
-const PASS = "example";
+use Classes\Contact;
 
-$pdo = new PDO(DSN, USER, PASS, [PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]);
+$contact = new Contact();
+$newContact = $contact->phone('000-555-000')
+    ->name("John")
+    ->surname("Surname")
+    ->email("john@email.com")
+    ->address("Some address")
+    ->build();
 
-$query = $pdo->prepare("SELECT * FROM students");
-
-$query->execute();
-
-echo '<pre>' . print_r($query->fetchAll(), true) . '</pre>';
-?>
+var_dump($newContact);
