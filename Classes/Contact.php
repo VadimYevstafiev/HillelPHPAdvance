@@ -3,7 +3,6 @@
 namespace Classes;
 
 class Contact {
-    protected $instance;
     protected $name;
     protected $surname;
     protected $email;
@@ -17,37 +16,37 @@ class Contact {
 
     public function name (string $name): Contact
     {
-        $this->instance->name = $name;
+        $this->name = $name;
         return $this;
     }
 
     public function surname (string $surname): Contact
     {
-        $this->instance->surname = $surname;
+        $this->surname = $surname;
         return $this;
     }
 
     public function email (string $email): Contact
     {
-        $this->instance->email = $email;
+        $this->email = $email;
         return $this;
     }
 
     public function phone (string $phone): Contact
     {
-        $this->instance->phone = $phone;
+        $this->phone = $phone;
         return $this;
     }
 
     public function address (string $address): Contact
     {
-        $this->instance->address = $address;
+        $this->address = $address;
         return $this;
     }
 
-    public function build (): \stdClass
+    public function build (): Contact
     {
-        $output = $this->instance;
+        $output = clone $this;
         $this->reset();
 
         return $output;
@@ -55,6 +54,9 @@ class Contact {
 
     protected function reset(): void
     {
-        $this->instance = new \stdClass();
+        foreach(get_object_vars($this) as $key => $value)
+        {
+            $this->$key = NULL;
+        }
     }
 }

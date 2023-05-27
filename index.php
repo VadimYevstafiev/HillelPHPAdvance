@@ -19,3 +19,4 @@ $newContact = $contact->phone('000-555-000')
     ->build();
 
 var_dump($newContact);
+var_dump($contact);
