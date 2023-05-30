@@ -1,0 +1,23 @@
+{
+    "name": "root/html",
+    "autoload": {
+        "psr-4": {
+            "Config\\": "Config/",
+            "Core\\": "Core/",
+            "App\\": "App/"          
+        },
+        "files": [
+            "Config/helpers.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "q"
+        }
+    ],
+    "require": {
+        "larapack/dd": "^1.1",
+        "vlucas/phpdotenv": "^5.5",
+        "ext-pdo": "*"
+    }
+}
