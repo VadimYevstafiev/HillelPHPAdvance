@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX folders_author_id_title_uindex ON folders (author_id, title);

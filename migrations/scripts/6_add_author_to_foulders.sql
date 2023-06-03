@@ -1,0 +1,1 @@
+ALTER TABLE folders ADD COLUMN author_id INT DEFAULT 0;

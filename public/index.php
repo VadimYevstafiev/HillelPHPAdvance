@@ -20,7 +20,3 @@ try {
 } catch (Exception $e) {
     dd('Exception', $e->getMessage());
 }
-
-
-
-//dd(Config::get('db.user'));
