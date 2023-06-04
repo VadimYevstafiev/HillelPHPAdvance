@@ -1,1 +1,1 @@
-ALTER TABLE folders ADD COLUMN author_id INT DEFAULT 0;
+ALTER TABLE folders ADD COLUMN author_id INT DEFAULT 0 CHECK (author_id >= 0);
