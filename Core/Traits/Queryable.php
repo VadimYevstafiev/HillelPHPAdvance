@@ -42,13 +42,21 @@ trait Queryable
         static::$query = '';
     }
 
-    public function where(): static
+    public function where(string $column, string $operator, $value): static
     {
-        
+        static::$query .= " WHERE {$column} {$operator} {$value}";
+        $this->comands[] = 'where';
+
+        return $this;
     }
 
     public function get()
     {
         return DB::connect()->query(static::$query)->fetchAll(PDO::FETCH_CLASS, static::class);
+    }
+
+    public function getSqlQuery(): string
+    {
+        return static::$query;
     }
 }

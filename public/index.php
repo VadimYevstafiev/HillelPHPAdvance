@@ -16,7 +16,7 @@ try {
     $dotenv->load();
 
     d(User::findBy('password', 1234));
-    dd(User::find(1));
+    dd(User::select()->where('email', '=', '1234@email.com')->getSqlQuery());
 } catch (PDOException $e) {
     dd('PDOException', $e->getMessage());
 } catch (Exception $e) {
