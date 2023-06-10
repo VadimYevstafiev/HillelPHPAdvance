@@ -15,8 +15,14 @@ try {
     $dotenv = Dotenv\Dotenv::createUnsafeImmutable(BASE_DIR);
     $dotenv->load();
 
-    d(User::findBy('password', 1234));
-    dd(User::select()->where('email', '=', '1234@email.com')->getSqlQuery());
+
+    $user = User::find(2);
+
+    $user->destroy();
+
+
+  //  d($query->getSqlQuery());
+  //  dd($query->get());
 } catch (PDOException $e) {
     dd('PDOException', $e->getMessage());
 } catch (Exception $e) {

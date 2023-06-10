@@ -8,6 +8,8 @@ abstract class Model
 {
     use Queryable;
 
+    public int $id;
+
     static protected function getTableName(): string
     {
        $nameArray = explode('\\', static::class);
