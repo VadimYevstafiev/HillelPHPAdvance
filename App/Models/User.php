@@ -6,6 +6,5 @@ use Core\Model;
 
 class User extends Model
 {
-    public int $id;
-    public string $email, $password, $created_at;
+        public string $email, $password, $created_at;
 }
