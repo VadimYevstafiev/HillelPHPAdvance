@@ -25,7 +25,8 @@ Router::add(
     [
         'controller' => Controllers\AuthController::class,
         'action' => 'logout',
-        'method' => 'POST'    
+        //'method' => 'POST'
+        'method' => 'GET'
     ]
 );
 Router::add(
@@ -45,10 +46,50 @@ Router::add(
     ]
 );
 Router::add(
+    'auth/signout',
+    [
+        'controller' => Controllers\AuthController::class,
+        'action' => 'signout',
+        'method' => 'POST'    
+    ]
+);
+Router::add(
     'auth/verify',
     [
         'controller' => Controllers\AuthController::class,
         'action' => 'verify',
+        'method' => 'POST'    
+    ]
+);
+Router::add(
+    'dashboard',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'index',
+        'method' => 'GET'    
+    ]
+);
+Router::add(
+    'folders/{id:\d+}',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'show',
+        'method' => 'GET'    
+    ]
+);
+Router::add(
+    'folders/create',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'create',
+        'method' => 'GET'    
+    ]
+);
+Router::add(
+    'folders/store',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'store',
         'method' => 'POST'    
     ]
 );
