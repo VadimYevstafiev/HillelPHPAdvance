@@ -153,7 +153,7 @@ Router::add(
     [
         'controller' => Controllers\NotesController::class,
         'action' => 'update',
-        'method' => 'GET'    
+        'method' => 'POST'    
     ]
 );
 Router::add(

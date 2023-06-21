@@ -11,7 +11,10 @@ class NotesController extends Controller
 {
     public function show(int $id)
     {
-        view('notes/show', ['note' => Note::find($id)]);
+
+        view('notes/show', [
+            'note' => Note::find($id)
+        ]);
     }
 
 
@@ -39,25 +42,37 @@ class NotesController extends Controller
 
     public function edit(int $id)
     {
-        d(__CLASS__);
-        d(__METHOD__);
+        view("notes/edit", ['note' => Note::find($id)]);
     }
 
 
     public function update(int $id)
     {
 
+        $fields = filter_input_array(INPUT_POST, $_POST);
+        $note = Note::find($id);
+        $fields['folder_id'] = $note->folder_id;
+
+        $validator = new NotersValidator();
+
+        if (NotesService::update($validator, $id, $fields)) {
+            Session::notify('success', 'Note was updated!');
+            redirect("folders/{$fields['folder_id']}");
+        }
+
+        view("notes/{$id}/update", $this->getErrors($fields, $validator));
     }
 
     public function destroy(int $id)
     {
-        $fields = filter_input_array(INPUT_POST, $_POST);
+
+       // $fields = filter_input_array(INPUT_POST, $_POST);
+        $folder_id = Note::find($id)->folder_id;
+ 
         NotesService::destroy($id);
+        Session::notify('success', 'Note was destroy!');
 
-        d($fields);
-        dd($id);
-
-        redirect("folders/{$fields['folder_id']}");
+        redirect("folders/{$folder_id}");
     }
 
     public function before (string $action, array $params = []): bool

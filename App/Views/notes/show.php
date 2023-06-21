@@ -1,4 +1,5 @@
-<?php view('blocks/header'); ?>
+<?php view('blocks/header'); 
+?>
     <div class="container">
         <div class="row">
             <div class="col-12">
@@ -50,7 +51,7 @@
                             style="margin-right: 1rem"><i class="fa fa-pencil" aria-hidden="true"></i>
                         </a>
                         <form action="<?= url('notes/' . $note->id . '/destroy') ?>" method="POST">
-                            <button type="submit" name="folder_id" value="<?= $activeFolder ?>"
+                            <button type="submit" name="folder_id" value="<?= $note->folder_id ?>"
                                 class="btn btn-outline-danger"
                                 ><i class="fa fa-trash remove-note"></i></button>
                         </form>

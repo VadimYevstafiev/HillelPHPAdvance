@@ -76,6 +76,7 @@ trait Queryable
     public function update(array $fields): bool
     {
         $query = "UPDATE " . static::getTableName() . " SET" . $this->updatePlaceholders(array_keys($fields)) . " WHERE id = :id";
+        
         $query = DB::connect()->prepare($query);
         $fields['id'] = $this->id;
 

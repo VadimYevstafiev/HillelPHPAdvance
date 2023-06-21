@@ -10,16 +10,17 @@ class NotersValidator extends BaseValidator
 {
     protected array $rules = [
         'title' => '/.{3,255}$/i',
-        'contetnt' => '/.+$/i',
+        'content' => '/.+$/i',
     ];
 
     protected array $errors = [
         'title' => 'Title should be more then 3 symbols but less then 255',
-        'contetnt' => 'Content should be more then 1 symbol',
+        'content' => 'Content should be more then 1 symbol',
     ];
 
     public function validate(array $fields = []): bool
     {
+
         $result = [
             parent::validate($fields),
             $this->validateFolderId($fields['folder_id'])
@@ -30,6 +31,7 @@ class NotersValidator extends BaseValidator
 
     public function validateFolderId(int $folderId): bool
     {
+
         $result = (bool) Folder::select()
         ->where('id', $folderId)
         ->whereIn('author_id', [Session::id(), 0])
