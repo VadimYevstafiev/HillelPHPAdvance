@@ -2,6 +2,7 @@
 
 use Config\Config;
 use Core\View;
+use App\Helpers\Session;
 
 function config(string $name): string|null
 {
@@ -18,11 +19,11 @@ function url(string $patch = ''): string
     return SITE_URL . '/' . $patch;
 }
 
-function logout(): string
+function urlBack(): string
 {
-    Session::setLogout();
-    return SITE_URL . '/logout';
+    return $_SERVER['HTTP_REFERER'] ?? url();
 }
+
 
 function currentLink(string $patch): bool
 {
@@ -46,4 +47,13 @@ function showInputError(string $key, array $errors = []): string
     return !empty($errors[$key])
         ? sprintf('<div class="mb-3 alert alert-danger" role="alert">%s</div>', $errors[$key])
         : '';
+}
+
+function notify()
+{
+    if (!empty($_SESSION['notify'])) {
+        $template = '<div class="alert alert-%s" role="alert">%s</div>';
+        echo sprintf($template, $_SESSION['notify']['type'], $_SESSION['notify']['message']);
+        Session::flashNotify();
+    }
 }

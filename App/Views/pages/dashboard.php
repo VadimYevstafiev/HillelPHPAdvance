@@ -2,7 +2,7 @@
 
 <div class="page-content container note-has-grid">
     <?php view('navs/folders', compact('folders', 'activeFolder')) ?> 
-    <?php view('blocks/notes/list', compact('notes')) ?> 
+    <?php view('blocks/notes/list', compact('notes', 'activeFolder')) ?> 
 
 
     <!-- Modal Add notes -->
