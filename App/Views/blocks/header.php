@@ -12,4 +12,9 @@
     <link href="<?= ASSETS_URI ?>css/styles.css" rel="stylesheet">
 </head>
 <body>
-<?php if (!\App\Helpers\Logout::checkLogout()) view('navs/main'); ?>
+<?php 
+if (!\App\Helpers\Logout::checkLogout()) {
+    view('navs/main');
+}
+notify();
+?>

@@ -3,15 +3,14 @@
 use Core\Router;
 use App\Controllers;
 
-//notes/4/edit
-//Router::add(
-//    'notes/{id:\d+}/edit',
-//    [
-//        'controller' => \App\Controllers\NotesController::class,
-//        'action' => 'edit',
-//        'method' => 'GET'
-//    ]
-//);
+Router::add(
+    '',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'index',
+        'method' => 'GET'     
+    ]
+);
 Router::add(
     'login',
     [
@@ -90,6 +89,78 @@ Router::add(
     [
         'controller' => Controllers\FoldersController::class,
         'action' => 'store',
+        'method' => 'POST'    
+    ]
+);
+Router::add(
+    'folders/{id:\d+}/edit',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'edit',
+        'method' => 'GET'    
+    ]
+);
+Router::add(
+    'folders/{id:\d+}/update',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'update',
+        'method' => 'POST'    
+    ]
+);
+Router::add(
+    'folders/{id:\d+}/destroy',
+    [
+        'controller' => Controllers\FoldersController::class,
+        'action' => 'destroy',
+        'method' => 'POST'    
+    ]
+);
+Router::add(
+    'notes/{id:\d+}',
+    [
+        'controller' => Controllers\NotesController::class,
+        'action' => 'show',
+        'method' => 'GET'    
+    ]
+);
+Router::add(
+    'notes/create',
+    [
+        'controller' => Controllers\NotesController::class,
+        'action' => 'create',
+        'method' => 'GET'    
+    ]
+);
+Router::add(
+    'notes/store',
+    [
+        'controller' => Controllers\NotesController::class,
+        'action' => 'store',
+        'method' => 'POST'    
+    ]
+);
+Router::add(
+    'notes/{id:\d+}/edit',
+    [
+        'controller' => Controllers\NotesController::class,
+        'action' => 'edit',
+        'method' => 'GET'    
+    ]
+);
+Router::add(
+    'notes/{id:\d+}/update',
+    [
+        'controller' => Controllers\NotesController::class,
+        'action' => 'update',
+        'method' => 'POST'    
+    ]
+);
+Router::add(
+    'notes/{id:\d+}/destroy',
+    [
+        'controller' => Controllers\NotesController::class,
+        'action' => 'destroy',
         'method' => 'POST'    
     ]
 );

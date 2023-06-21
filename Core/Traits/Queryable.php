@@ -76,17 +76,18 @@ trait Queryable
     public function update(array $fields): bool
     {
         $query = "UPDATE " . static::getTableName() . " SET" . $this->updatePlaceholders(array_keys($fields)) . " WHERE id = :id";
+        
         $query = DB::connect()->prepare($query);
         $fields['id'] = $this->id;
 
         return $query->execute($fields);
     }
 
-    public function destroy(): bool
+    static public function destroy(int $id): bool
     {
         $query = "DELETE FROM " . static::getTableName() . " WHERE id = :id";
         $query = DB::connect()->prepare($query);
-        $query->bindParam('id', $this->id);
+        $query->bindParam('id', $id);
 
         return $query->execute();
     }
@@ -100,7 +101,7 @@ trait Queryable
 
         $obj = in_array('select', $this->commands) ? $this : static::select();
 
-        if (!is_bool($value)) {
+        if (!is_bool($value) && $operator !== 'IN') {
             $value = "'{$value}'";
         }
 
@@ -121,6 +122,16 @@ trait Queryable
         return $this->where($column, $value, $operator);
     }
 
+    public function whereIn(string $column, array $value, $type = 'AND'): static
+    {
+        if (in_array('where', $this->commands)) {
+            static::$query .= " {$type}";
+        }
+
+        $value = "(" . implode(',', $value) . ") ";
+        return $this->where($column, $value, 'IN');
+    }
+
     public function orWhere(string $column, $value, string $operator = '='): static
     {
         static::$query .= " OR";
@@ -128,7 +139,6 @@ trait Queryable
         return $this->where($column, $value, $operator);
     }
 
-    
     public function orderBy (string $column, SqlOrder $sqlOrder = SqlOrder::ASC): static
     {
 
