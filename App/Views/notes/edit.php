@@ -13,15 +13,55 @@
                 </div>
                 <div class="col-12 d-flex flex-column" style="padding: 0 1rem">
                     <div class="mb-3">
-                        <label for="title" class="form-label">Change title</label>
-                        <textarea class="form-control" name="title" id="title" rows="5"><?= $note->title ?></textarea>
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" name="title" class="form-control" id="title"
+                            placeholder="Put some title"
+                            value="<?= $note->title ?>"
+                        >
                     </div>
                     <div class="mb-3">
-                        <label for="content" class="form-label">Change content</label>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="pinned" name="pinned"
+                                value="1"
+                                <?= $note->pinned ? 'checked' : ''?>
+                            >
+                            <label class="form-check-label" for="pinned">Pin note</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="completed" name="completed"
+                                value="1"
+                                <?= $note->completed ? 'checked' : ''?>
+                            >
+                            <label class="form-check-label" for="completed">Complete note</label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="folders" class="form-label">Folder</label>
+                        <select name="folder_id" id="folders" class="form-control">
+                            <?php foreach($folders as $folder): ?>
+                                <option value="<?= $folder->id ?>"
+                                    <?= $note->folder_id === $folder->id ? 'selected' : '' ?>
+                                ><?= $folder->title ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <label for="users" class="form-label">Share note with users</label>
+                        <select name="users[]" id="users" class="form-control" multiple>
+                            <?php foreach($users as $user): ?>
+                                <option value="<?= $user->id ?>"
+                                    <?= in_array($user->id, $sharedUsers) ? 'selected' : ''?>
+                                ><?= $user->email ?></option>
+                            <?php endforeach; ?>
+                            <option value="0"></option>
+                        </select>
+                    <div class="mb-3">
+                        <label for="content" class="form-label">Content</label>
                         <textarea class="form-control" name="content" id="content" rows="5"><?= $note->content ?></textarea>
                     </div>
                     <div class="mb-3 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
 
                     </div>
                 </div>

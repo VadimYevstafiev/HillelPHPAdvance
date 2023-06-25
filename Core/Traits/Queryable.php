@@ -3,7 +3,7 @@
 namespace Core\Traits;
 
 use Core\DB;
-use Core\Enums\SqlOrder;
+//use Core\Enums\SqlOrder;
 use PDO;
 
 trait Queryable
@@ -45,6 +45,7 @@ trait Queryable
 
     static public function create(array $fields): false|int
     {
+
         $params = static::prepareQueryParams($fields);
 
         $query = "INSERT INTO " . static::getTableName() . " ({$params['keys']}) VALUES ({$params['placeholders']})";
@@ -92,6 +93,15 @@ trait Queryable
         return $query->execute();
     }
 
+    public function remove(): bool
+    {
+        if (!$this->id) {
+            throw new \Exception("[destroy] id field is missing");
+            
+        }
+        return static::destroy($this->id);
+    }
+
     public function where(string $column, $value, string $operator = '='): static
     {
 
@@ -101,7 +111,7 @@ trait Queryable
 
         $obj = in_array('select', $this->commands) ? $this : static::select();
 
-        if (!is_bool($value) && $operator !== 'IN') {
+        if (!is_bool($value) && !in_array($operator, ['IN', 'NOT IN'])) {
             $value = "'{$value}'";
         }
 
@@ -122,6 +132,13 @@ trait Queryable
         return $this->where($column, $value, $operator);
     }
 
+    public function orWhere(string $column, $value, string $operator = '='): static
+    {
+        static::$query .= " OR";
+
+        return $this->where($column, $value, $operator);
+    }
+
     public function whereIn(string $column, array $value, $type = 'AND'): static
     {
         if (in_array('where', $this->commands)) {
@@ -132,23 +149,61 @@ trait Queryable
         return $this->where($column, $value, 'IN');
     }
 
-    public function orWhere(string $column, $value, string $operator = '='): static
+    public function whereNotIn(string $column, array $value, $type = 'AND'): static
     {
-        static::$query .= " OR";
+        if (in_array('where', $this->commands)) {
+            static::$query .= " {$type}";
+        }
 
-        return $this->where($column, $value, $operator);
+        $value = "(" . implode(',', $value) . ") ";
+        return $this->where($column, $value, 'NOT IN');
     }
 
-    public function orderBy (string $column, SqlOrder $sqlOrder = SqlOrder::ASC): static
+    public function orderBy (array $columns): static
     {
 
         if (!$this->prevent(['select'])) {
-            throw new \Exception("[Queryble]: ORDER BY can not be before ['group', 'limit', 'order', 'having']");
+            throw new \Exception("[Queryble]: ORDER BY can not be before ['select']");
         }
 
         $this->commands[] = 'order';
 
-        static::$query .= " ORDER BY {$column} " . $sqlOrder->value;
+        static::$query .= " ORDER BY";
+
+        $lastKey = array_key_last($columns);
+        /**
+         * @var SqlOrder $order
+         */
+        foreach ($columns as $column => $order) {
+            static::$query .= " {$column} {$order->value}" . ($column === $lastKey ? '' : ',');
+        }
+
+        return $this;
+    }
+
+    public function groupBy (array $columns): static
+    {
+
+        if (!$this->prevent(['select'])) {
+            throw new \Exception("[Queryble]: GROUP BY can not be before ['select']");
+        }
+
+        $this->commands[] = 'group';
+
+        static::$query .= " GROUP BY " . implode(', ', $columns);
+
+        return $this;
+    }
+
+    public function join(string $table, string $t1Column, string $t2Column, string $operator = '=', string $type = 'LEFT'): static
+    {
+        if (!$this->prevent(['select'])) {
+            throw new \Exception("[Queryble]: {$type} JOIN can not be before ['select']");
+        }
+
+        $this->commands[] = 'join';
+
+        static::$query .= " {$type} JOIN {$table} ON {$t1Column} {$operator} {$t2Column}";
 
         return $this;
     }
@@ -156,6 +211,18 @@ trait Queryable
     public function get()
     {
         return DB::connect()->query(static::$query)->fetchAll(PDO::FETCH_CLASS, static::class);
+    }
+
+    public function pluck(string $column): array
+    {
+        $result = $this->get();
+        $newArr = [];
+
+        foreach ($result as $item) {
+            $newArr[] = $item->$column;
+        }
+
+        return $newArr;
     }
 
     public function getSqlQuery(): string

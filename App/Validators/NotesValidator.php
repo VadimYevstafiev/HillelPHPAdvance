@@ -6,7 +6,7 @@ use App\Helpers\Session;
 use App\Models\Folder;
 use App\Validators\Base\BaseValidator;
 
-class NotersValidator extends BaseValidator
+class NotesValidator extends BaseValidator
 {
     protected array $rules = [
         'title' => '/.{3,255}$/i',
@@ -16,6 +16,24 @@ class NotersValidator extends BaseValidator
     protected array $errors = [
         'title' => 'Title should be more then 3 symbols but less then 255',
         'content' => 'Content should be more then 1 symbol',
+    ];
+
+    const REQUEST_RULES = [
+        'folder_id' => FILTER_VALIDATE_INT,
+        'title' => array(
+            'filter' => 'is_string',
+            'flags' => FILTER_CALLBACK
+        ),
+        'content' => array(
+            'filter' => 'is_string',
+            'flags' => FILTER_CALLBACK
+        ),
+        'users'   => array(
+            'filter' => FILTER_VALIDATE_INT,
+            'flags'  => FILTER_REQUIRE_ARRAY
+        ),
+        'pinned' => FILTER_VALIDATE_BOOL,
+        'completed' => FILTER_VALIDATE_BOOL
     ];
 
     public function validate(array $fields = []): bool
