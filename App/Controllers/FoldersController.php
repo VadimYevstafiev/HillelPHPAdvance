@@ -12,15 +12,19 @@ class FoldersController extends Controller
 
     public function index()
     {
-        $this::show(Folder::GENERAL_FOLDER_ID);
+        $folders = Folder::getUserFoldersWithShared();
+        $activeFolder = Folder::GENERAL_FOLDER_ID;
+        $notes = Note::byFolder($activeFolder);
+
+        view('pages/dashboard', compact('notes', 'folders', 'activeFolder'));
     }
 
     public function show(int $id)
     {
-        $folders = Folder::getUserFolders();
+        $folders = Folder::getUserFoldersWithShared();
         $activeFolder = $id;
 
-        $notes = Note::byFolder($activeFolder);
+        $notes = $id === Folder::SHARED_FOLDER_ID ? Note::sharedNotes() : Note::byFolder($activeFolder);
 
         view('pages/dashboard', compact('notes', 'folders', 'activeFolder'));
     }

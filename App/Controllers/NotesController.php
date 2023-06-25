@@ -2,10 +2,10 @@
 namespace App\Controllers;
 
 use Core\Controller;
-use App\Models\{Note, Folder};
+use App\Models\{Note, Folder, User, SharedNote};
 use App\Helpers\Session;
 use App\Services\NotesService;
-use App\Validators\NotersValidator;
+use App\Validators\NotesValidator;
 
 class NotesController extends Controller
 {
@@ -17,19 +17,21 @@ class NotesController extends Controller
         ]);
     }
 
-
     public function create()
-    {
+    {   
+        $users = User::select()->where('id', Session::id(), '!=')->get();
+
         view('notes/create', [
-            'folders' => Folder::getUserFolders()
+            'folders' => Folder::getUserFolders(),
+            'users' => $users
         ]);
     }
 
     public function store()
     {
-        $fields = filter_input_array(INPUT_POST, $_POST);
+        $fields = filter_input_array(INPUT_POST, NotesValidator::REQUEST_RULES, false);
 
-        $validator = new NotersValidator();
+        $validator = new NotesValidator();
 
         if (NotesService::create($validator, $fields)) {
             Session::notify('success', 'Note was created!');
@@ -42,20 +44,25 @@ class NotesController extends Controller
 
     public function edit(int $id)
     {
-        view("notes/edit", ['note' => Note::find($id)]);
+        $folders = Folder::getUserFolders();
+        $users = User::select()->where('id', Session::id(), '!=')->get();
+        $sharedUsers = SharedNote::select(['user_id'])->where('note_id', $id)->pluck('user_id');
+        $note = Note::find($id);
+
+        view("notes/edit", compact('folders', 'users', 'note', 'sharedUsers'));
     }
 
 
     public function update(int $id)
     {
 
-        $fields = filter_input_array(INPUT_POST, $_POST);
+        $fields = filter_input_array(INPUT_POST, NotesValidator::REQUEST_RULES, false);
         $note = Note::find($id);
         $fields['folder_id'] = $note->folder_id;
 
-        $validator = new NotersValidator();
+        $validator = new NotesValidator();
 
-        if (NotesService::update($validator, $id, $fields)) {
+        if (NotesService::update($validator, $note, $fields)) {
             Session::notify('success', 'Note was updated!');
             redirect("folders/{$fields['folder_id']}");
         }
